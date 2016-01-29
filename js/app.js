@@ -1,0 +1,103 @@
+jQuery(function ($) {
+
+	// Жёсткий, мужицкий стрикт
+	'use strict';
+
+	// Поехали!
+	var scores = [
+		['26 января 2015', '27:26'],
+		['27 января 2015', '28:29'],
+		['28 января 2015', '28:30'],
+		['29 января 2015', '28:34']
+	];
+	
+	var chartData = [];
+	var maxDiff = 0;
+	for (var i in scores) {
+		var parts = scores[i][1].split(':');
+		chartData.push([
+			scores[i][0],
+			parseInt(parts[1]) - parseInt(parts[0])
+		]);
+		var abs = Math.abs(parseInt(parts[1]) - parseInt(parts[0]));
+		if (abs > maxDiff) {
+			maxDiff = abs;
+		}
+	}
+	
+	$('#history-chart').highcharts({
+        chart: {
+            type: 'column',
+            inverted: true,
+            backgroundColor: null,
+            style: {
+                overflow: 'visible'
+            },
+            margin: [10, 10, 10, 0],
+            skipClone: true
+        },
+        title: {
+            text: ''
+        },
+        xAxis: {
+            reversed: false,
+            labels: {
+                enabled: false
+            },
+            title: {
+                enabled: true,
+                text: ''
+            },
+            //maxPadding: 0.05,
+            lineWidth: 0,
+    		startOnTick: false,
+            endOnTick: false,
+            tickPositions: []
+        },
+        yAxis: {
+            labels: {
+                enabled: false
+            },
+            title: {
+                text: null
+            },
+            startOnTick: false,
+            endOnTick: false,
+            tickPositions: [0],
+            min: -2 * maxDiff,
+            max: 2 * maxDiff
+        },
+        legend: {
+            enabled: false
+        },
+        credits: {
+			enabled: false
+		},
+		tooltip: {
+			borderWidth: 0,
+			shadow: false,
+			useHTML: true,
+			hideDelay: 0,
+			shared: true,
+			padding: 0,
+			positioner: function (w, h, point) {
+				return { x: point.plotX - w / 2, y: point.plotY - h };
+			},
+			//pointFormat: '{point.x} km: {point.y}°C'
+			pointFormatter: function (x) {
+				return scores[this.index][1];
+			}
+		},
+        plotOptions: {
+            column: {
+            	negativeColor: '#910000',
+                pointPadding: -0.2,
+                borderWidth: 0
+            }
+        },
+        series: [{
+        	name: 'Счёт',
+            data: chartData
+        }]
+    });
+});
