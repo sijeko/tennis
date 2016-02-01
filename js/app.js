@@ -3,18 +3,27 @@ jQuery(function ($) {
 	// Жёсткий, мужицкий стрикт
 	'use strict';
 
-	// Поехали!
+	// Таблица результатов
 	var scores = [
 		['26 января 2016', '27:26'],
 		['27 января 2016', '28:29'],
 		['28 января 2016', '28:30'],
 		['29 января 2016', '28:34'],
-		['1 февраля 2016', '32:36']
+		['1 февраля 2016, утро', '28:36'],
+		['1 февраля 2016, вечер', '32:36']
 	];
-	
+
+
+	// Поехали!
+	var elScore = $('.j-latest-score');
+
 	var chartData = [];
 	var maxDiff = 0;
 	for (var i in scores) {
+		if (!scores.hasOwnProperty(i)) {
+			continue;
+		}
+
 		var parts = scores[i][1].split(':');
 		chartData.push([
 			scores[i][0],
@@ -25,53 +34,57 @@ jQuery(function ($) {
 			maxDiff = abs;
 		}
 	}
-	
+
+	// Устанавливаем последний счёт
+	elScore.text(scores[scores.length - 1][1]);
+
+	// Рисуем искрографик
 	$('#history-chart').highcharts({
-        chart: {
-            type: 'column',
-            inverted: true,
-            backgroundColor: null,
-            style: {
-                overflow: 'visible'
-            },
-            margin: [10, 10, 10, 0],
-            skipClone: true
-        },
-        title: {
-            text: ''
-        },
-        xAxis: {
-            reversed: false,
-            labels: {
-                enabled: false
-            },
-            title: {
-                enabled: true,
-                text: ''
-            },
-            //maxPadding: 0.05,
-            lineWidth: 0,
-    		startOnTick: false,
-            endOnTick: false,
-            tickPositions: []
-        },
-        yAxis: {
-            labels: {
-                enabled: false
-            },
-            title: {
-                text: null
-            },
-            startOnTick: false,
-            endOnTick: false,
-            tickPositions: [0],
-            min: -2 * maxDiff,
-            max: 2 * maxDiff
-        },
-        legend: {
-            enabled: false
-        },
-        credits: {
+		chart: {
+			type: 'column',
+			inverted: true,
+			backgroundColor: null,
+			style: {
+				overflow: 'visible'
+			},
+			margin: [10, 10, 10, 0],
+			skipClone: true
+		},
+		title: {
+			text: ''
+		},
+		xAxis: {
+			reversed: false,
+			labels: {
+				enabled: false
+			},
+			title: {
+				enabled: true,
+				text: ''
+			},
+			//maxPadding: 0.05,
+			lineWidth: 0,
+			startOnTick: false,
+			endOnTick: false,
+			tickPositions: []
+		},
+		yAxis: {
+			labels: {
+				enabled: false
+			},
+			title: {
+				text: null
+			},
+			startOnTick: false,
+			endOnTick: false,
+			tickPositions: [0],
+			min: -2 * maxDiff,
+			max: 2 * maxDiff
+		},
+		legend: {
+			enabled: false
+		},
+		credits: {
 			enabled: false
 		},
 		tooltip: {
@@ -82,23 +95,23 @@ jQuery(function ($) {
 			shared: true,
 			padding: 0,
 			positioner: function (w, h, point) {
-				return { x: point.plotX - w / 2, y: point.plotY - h };
+				return {x: point.plotX - w / 2, y: point.plotY - h};
 			},
 			//pointFormat: '{point.x} km: {point.y}°C'
 			pointFormatter: function (x) {
 				return scores[this.index][1];
 			}
 		},
-        plotOptions: {
-            column: {
-            	negativeColor: '#910000',
-                pointPadding: -0.2,
-                borderWidth: 0
-            }
-        },
-        series: [{
-        	name: 'Счёт',
-            data: chartData
-        }]
-    });
+		plotOptions: {
+			column: {
+				negativeColor: '#910000',
+				pointPadding: -0.2,
+				borderWidth: 0
+			}
+		},
+		series: [{
+			name: 'Счёт',
+			data: chartData
+		}]
+	});
 });
